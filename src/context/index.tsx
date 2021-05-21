@@ -54,6 +54,8 @@ const AppContext =
         videoLoop: boolean;
         muteDisplay: number;
         playingSound: string;
+        loginDrawerVisible: boolean;
+        setLoginDrawerVisible: (v: boolean) => void;
         setPlayingSound: (v: string) => void;
         setLoginIconColor: (v: LoginIconColor) => void;
         setAntdThemeColor: (
@@ -83,6 +85,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [videoLoop, setVideoLoop] = useState(true);
   const [currentUser, setCurrentUser] = useState({ avatar: "", name: "" });
   const [muteDisplay, setMuteDisplay] = useState(0);
+  const [loginDrawerVisible, setLoginDrawerVisible] = useState(false);
   const [multiPicsEffect, setMultiPicsEffect] =
     useState<CarouselEffect>("fade");
   const [multiPicsEffectM, setMultiPicsEffectM] =
@@ -103,6 +106,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         videoLoop,
         muteDisplay,
         playingSound,
+        loginDrawerVisible,
+        setLoginDrawerVisible,
         setPlayingSound,
         setCurrentUser,
         setMuteDisplay,

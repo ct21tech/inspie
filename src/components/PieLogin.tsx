@@ -17,9 +17,14 @@ import { LoginIconColor, useApp, User } from "./../context";
 import { PieWechatLogin } from "./PieWechatLogin";
 import { useState } from "react";
 
-export const PieLogin = () => {
-  const { loginIconColor, loginButtonLarge, antdThemeColor, setCurrentUser } =
-    useApp();
+export const PieLogin = (props: { style?: {} }) => {
+  const {
+    loginIconColor,
+    loginButtonLarge,
+    antdThemeColor,
+    setCurrentUser,
+    setLoginDrawerVisible,
+  } = useApp();
 
   const [wechatLogin, setWechatLogin] = useState(false);
 
@@ -33,22 +38,26 @@ export const PieLogin = () => {
   };
   const loginGoogleRes = (res: any) => {
     const profile = res.getBasicProfile();
+    setLoginDrawerVisible(false);
     setCurrentUser({ avatar: profile.getImageUrl(), name: profile.getName() });
     // console.log(res.getAuthResponse());
   };
 
   const loginFacebookRes = (res: any) => {
     // console.log(res);
+    setLoginDrawerVisible(false);
     setCurrentUser({ avatar: res.picture.data.url, name: res.name });
   };
 
   const loginTwitterRes = (res: Response) => {
+    setLoginDrawerVisible(false);
     res.json().then((user: User) => setCurrentUser(user));
   };
 
   const loginWechatRes = (res: string) => {
     try {
       const user = JSON.parse(res);
+      setLoginDrawerVisible(false);
       setCurrentUser({ avatar: user.avatar, name: user.name });
     } catch (e) {
       console.log(res);
@@ -56,7 +65,7 @@ export const PieLogin = () => {
   };
 
   return (
-    <ShadowCard>
+    <ShadowCard style={{ ...props.style }}>
       <LockOutlined
         style={{ color: "grey", fontSize: "2.5rem", margin: "auto" }}
       />

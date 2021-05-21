@@ -1,14 +1,21 @@
 import React, { useState } from "react";
-import { Layout, Badge, Avatar, Image } from "antd";
+import { Layout, Badge, Avatar, Drawer } from "antd";
 import { BellFilled, UserOutlined } from "@ant-design/icons";
 import { useApp } from "./../context/index";
+import { PieLogin } from "./PieLogin";
 
 const { Header } = Layout;
 
 export const Appbar = () => {
-  const { antdThemeColor, currentUser } = useApp();
+  const {
+    antdThemeColor,
+    currentUser,
+    loginDrawerVisible,
+    setLoginDrawerVisible,
+  } = useApp();
   const [bellHover, setBellHover] = useState(false);
   const [userHover, setUserHover] = useState(false);
+
   const styles = {
     button: {
       fontSize: "2rem",
@@ -30,54 +37,85 @@ export const Appbar = () => {
     if (key === "bell") setBellHover(false);
     else if (key === "user") setUserHover(false);
   };
+
+  const onDrawerClose = () => {
+    setLoginDrawerVisible(false);
+  };
+
   return (
-    <Header
-      className="header"
-      style={{
-        textAlign: "right",
-        backgroundColor: antdThemeColor.primary,
-        padding: "0 1rem",
-        transition: `background-color 300ms linear`,
-        boxShadow:
-          "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
-      }}
-    >
-      <Badge count={5} offset={[-12, 8]}>
-        <BellFilled
+    <>
+      <Header
+        className="header"
+        style={{
+          textAlign: "right",
+          backgroundColor: antdThemeColor.primary,
+          padding: "0 1rem",
+          transition: `background-color 300ms linear`,
+          boxShadow:
+            "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+        }}
+      >
+        <Badge count={5} offset={[-12, 8]}>
+          <BellFilled
+            style={{
+              ...styles.button,
+              backgroundColor: bellHover ? antdThemeColor[4] : "",
+            }}
+            key="bell"
+            onMouseEnter={mouseEnterHandler}
+            onMouseLeave={mouseLeaveHandler}
+          />
+        </Badge>
+        {currentUser.avatar === "" ? (
+          <UserOutlined
+            style={{
+              ...styles.button,
+              backgroundColor: userHover ? antdThemeColor[4] : "",
+            }}
+            key="user"
+            onMouseEnter={mouseEnterHandler}
+            onMouseLeave={mouseLeaveHandler}
+            onClick={() => {
+              if (currentUser.name === "") {
+                setLoginDrawerVisible(true);
+              }
+            }}
+          />
+        ) : (
+          <Avatar
+            size={28}
+            style={{
+              cursor: "pointer",
+              marginLeft: ".4rem",
+              marginRight: ".4rem",
+              marginBottom: "1rem",
+            }}
+            src={currentUser.avatar}
+          />
+        )}
+      </Header>
+      <Drawer
+        placement="right"
+        closable={false}
+        onClose={onDrawerClose}
+        visible={loginDrawerVisible}
+        bodyStyle={{ padding: 0, verticalAlign: "middle" }}
+        destroyOnClose={true}
+        width={410}
+        headerStyle={{
+          backgroundColor: antdThemeColor.primary,
+          color: "white",
+        }}
+      >
+        <PieLogin
           style={{
-            ...styles.button,
-            backgroundColor: bellHover ? antdThemeColor[4] : "",
-          }}
-          key="bell"
-          onMouseEnter={mouseEnterHandler}
-          onMouseLeave={mouseLeaveHandler}
-        />
-      </Badge>
-      {currentUser.avatar === "" ? (
-        <UserOutlined
-          style={{
-            ...styles.button,
-            backgroundColor: userHover ? antdThemeColor[4] : "",
-          }}
-          key="user"
-          onMouseEnter={mouseEnterHandler}
-          onMouseLeave={mouseLeaveHandler}
-          onClick={() => {
-            console.log(currentUser);
+            position: "absolute",
+            top: "10%",
+            left: "50%",
+            transform: "translate(-50%, 0)",
           }}
         />
-      ) : (
-        <Avatar
-          size={28}
-          style={{
-            cursor: "pointer",
-            marginLeft: ".4rem",
-            marginRight: ".4rem",
-            marginBottom: "1rem",
-          }}
-          src={currentUser.avatar}
-        />
-      )}
-    </Header>
+      </Drawer>
+    </>
   );
 };
